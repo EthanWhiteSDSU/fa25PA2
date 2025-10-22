@@ -11,7 +11,7 @@ using namespace std;
 // Global arrays for node information
 const int MAX_NODES = 64;
 int weightArr[MAX_NODES];
-int leftArr[MAX_NODES];
+int leftArr[MAX_NODES]; 
 int rightArr[MAX_NODES];
 char charArr[MAX_NODES];
 
@@ -88,7 +88,8 @@ int createLeafNodes(int freq[]) {
 }
 
 // Step 3: Build the encoding tree using heap operations
-int buildEncodingTree(int nextFree) {
+int buildEncodingTree(int nextFree) 
+{
     // TODO:
     // 1. Create a MinHeap object.
     // 2. Push all leaf node indices into the heap.
@@ -98,6 +99,26 @@ int buildEncodingTree(int nextFree) {
     //    - Set left/right pointers
     //    - Push new parent index back into the heap
     // 4. Return the index of the last remaining node (root)
+    
+    MinHeap min = MinHeap();
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        cout << i << " " << charArr[i] << " " << weightArr[i] << " "  << leftArr[i] << " " << rightArr[i] << endl;
+    }
+
+    cout << "\n";
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        min.push(i, weightArr);
+    }
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        cout << min.data[i] << " " << charArr[i] << " " << weightArr[i] << " "  << leftArr[i] << " " << rightArr[i] << endl;
+    }
+
     return -1; // placeholder
 }
 
