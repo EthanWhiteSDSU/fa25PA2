@@ -87,6 +87,29 @@ int createLeafNodes(int freq[]) {
     return nextFree;
 }
 
+// only for verification/debugging purposes. DELETE LATER. NOT IN FINAL PRODUCT
+void printHeap(MinHeap min, int (&weightArr)[])
+{
+    int n = min.size;
+    int level = 0;
+    int count = 0;
+    int nextLevel = 1;
+    
+    for (int i = 0; i < n; ++i) {
+        cout << min.data[i] << "(" << weightArr[min.data[i]] << ")" << " ";
+        count++;
+        if (count == nextLevel) {
+            cout << endl;
+            level++;
+            count = 0;
+            nextLevel = 1 << level;
+        }
+    }
+
+    cout << endl;
+    return;
+}
+
 // Step 3: Build the encoding tree using heap operations
 int buildEncodingTree(int nextFree) 
 {
@@ -102,11 +125,6 @@ int buildEncodingTree(int nextFree)
     
     MinHeap min = MinHeap();
 
-    for(int i = 0; i < nextFree; i++)
-    {
-        cout << i << " " << charArr[i] << " " << weightArr[i] << " "  << leftArr[i] << " " << rightArr[i] << endl;
-    }
-
     cout << "\n";
 
     for(int i = 0; i < nextFree; i++)
@@ -114,10 +132,13 @@ int buildEncodingTree(int nextFree)
         min.push(i, weightArr);
     }
 
-    for(int i = 0; i < nextFree; i++)
-    {
-        cout << min.data[i] << " " << charArr[i] << " " << weightArr[i] << " "  << leftArr[i] << " " << rightArr[i] << endl;
-    }
+    printHeap(min, weightArr);
+
+    min.pop(weightArr);
+
+    cout << "\n";
+
+    printHeap(min, weightArr);
 
     return -1; // placeholder
 }
