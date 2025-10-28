@@ -95,10 +95,12 @@ void printHeap(MinHeap min, int (&weightArr)[])
     int count = 0;
     int nextLevel = 1;
     
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) 
+    {
         cout << min.data[i] << "(" << weightArr[min.data[i]] << ")" << " ";
         count++;
-        if (count == nextLevel) {
+        if (count == nextLevel) 
+        {
             cout << endl;
             level++;
             count = 0;
@@ -106,45 +108,91 @@ void printHeap(MinHeap min, int (&weightArr)[])
         }
     }
 
-    cout << endl;
+    cout << "\n" << endl;
+    return;
+}
+
+// only for verification/debugging purposes. DELETE LATER. NOT IN FINAL PRODUCT
+void printArrays(int nextFree, char (&charArr)[], int (&weightArr)[], int (&leftArr)[], int (&rightArr)[])
+{
+    cout << "charArr: ";
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        cout << charArr[i] << " ";
+    }
+
+    cout << "\nweightArr: ";
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        cout << weightArr[i] << " ";
+    }
+
+    cout << "\nleftArr: ";
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        cout << leftArr[i] << " ";
+    }
+
+    cout << "\nrightArr: ";
+
+    for(int i = 0; i < nextFree; i++)
+    {
+        cout << rightArr[i] << " ";
+    }
+
+    cout << "\n" << endl;
     return;
 }
 
 // Step 3: Build the encoding tree using heap operations
 int buildEncodingTree(int nextFree) 
 {
-    // TODO:
-    // 1. Create a MinHeap object.
-    // 2. Push all leaf node indices into the heap.
-    // 3. While the heap size is greater than 1:
-    //    - Pop two smallest nodes
-    //    - Create a new parent node with combined weight
-    //    - Set left/right pointers
-    //    - Push new parent index back into the heap
-    // 4. Return the index of the last remaining node (root)
-    
+    // Create heap
     MinHeap min = MinHeap();
 
     cout << "\n";
 
+    // Form initial heap
     for(int i = 0; i < nextFree; i++)
     {
         min.push(i, weightArr);
     }
 
     printHeap(min, weightArr);
+    printArrays(nextFree, charArr, weightArr, leftArr, rightArr);
 
-    min.pop(weightArr);
+    while(min.size > 1)
+    {
+        // pop and save two smallest nodes
+        int smallOne = min.pop(weightArr);
+        int smallTwo = min.pop(weightArr);
 
-    cout << "\n";
+        // create new parent node
+        charArr[nextFree] = 'P';
+        weightArr[nextFree] = weightArr[smallOne] + weightArr[smallTwo];
+        leftArr[nextFree] = smallOne;
+        rightArr[nextFree] = smallTwo;
+
+        // push new parent node index into heap
+        min.push(nextFree, weightArr);
+        nextFree++;
+    }
 
     printHeap(min, weightArr);
+    printArrays(nextFree, charArr, weightArr, leftArr, rightArr);
 
-    return -1; // placeholder
+    cout << nextFree - 1 << endl;
+
+    // return index of new root node
+    return nextFree - 1;
 }
 
 // Step 4: Use an STL stack to generate codes
-void generateCodes(int root, string codes[]) {
+void generateCodes(int root, string codes[]) 
+{
     // TODO:
     // Use stack<pair<int, string>> to simulate DFS traversal.
     // Left edge adds '0', right edge adds '1'.
