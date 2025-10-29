@@ -179,7 +179,7 @@ int buildEncodingTree(int nextFree)
         // push new parent node index into heap
         min.push(nextFree, weightArr);
         nextFree++;
-    }
+    } 
 
     printHeap(min, weightArr);
     printArrays(nextFree, charArr, weightArr, leftArr, rightArr);
@@ -193,10 +193,46 @@ int buildEncodingTree(int nextFree)
 // Step 4: Use an STL stack to generate codes
 void generateCodes(int root, string codes[]) 
 {
-    // TODO:
-    // Use stack<pair<int, string>> to simulate DFS traversal.
-    // Left edge adds '0', right edge adds '1'.
-    // Record code when a leaf node is reached.
+    // create stack and push root
+    stack<pair<int, string>> stk;
+    stk.push({root, ""});
+
+    while(!stk.empty())
+    {
+        // save top node, then pop it from stack
+        pair<int, string> pr = stk.top();
+        cout << "int: " << pr.first << " string: " << pr.second << endl;
+        stk.pop();
+
+        // get left and right children of top node
+        int rightNode = rightArr[pr.first];
+        int leftNode = leftArr[pr.first];
+
+        // if top node is a leaf node, save code to codes and clear code
+        if(leftNode == -1 && rightNode == -1 && isalpha(charArr[pr.first]))
+        {
+            codes[charArr[pr.first] - 'a'] = pr.second;
+            pr.second.clear();
+        }
+
+        else
+        {
+            // push right child first so left node is accessed first (LIFO)
+            if(rightNode != -1)
+            {
+                cout << "right" << endl;
+                // add '1' to code when moving right
+                stk.push({rightNode, pr.second + '1'});
+            }
+                
+            if(leftNode != -1)
+            {
+                cout << "left" << endl;
+                // add '0' to code when moving left
+                stk.push({leftNode, pr.second + '0'});
+            }
+        }        
+    }
 }
 
 // Step 5: Print table and encoded message
@@ -207,7 +243,7 @@ void encodeMessage(const string& filename, string codes[]) {
             cout << char('a' + i) << " : " << codes[i] << "\n";
     }
 
-    cout << "\nEncoded message:\n";
+    cout << "\nEncoded message: ";
 
     ifstream file(filename);
     char ch;
