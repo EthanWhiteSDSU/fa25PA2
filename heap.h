@@ -17,14 +17,15 @@ struct MinHeap
 
     void push(int idx, int (&weightArr)[]) 
     {
-        data[size] = idx;
+        int child = size;
+        data[child] = idx;
+        size++;
 
         // no need to upheap if only root node
         if(size > 0)
         {
-            upheap(size, weightArr);
+            upheap(child, weightArr);
         }
-        size++;
 
         return;
     }
@@ -40,37 +41,38 @@ struct MinHeap
         // save and replace smallest index
         int smallest = data[0];
         data[0] = data[size - 1];
+        size--;
 
         // only need to downheap if there are 2 or more nodes
-        if(size > 2)
+        if(size > 1)
         {
             downheap(0, weightArr);
         }
-        size--;
 
         return smallest;
     }
 
     void upheap(int child, int (&weightArr)[]) 
     {
-        // initialize variables
-        int childData = data[child];
-        int parentPos = (child - 1) / 2;
-        int parentData = data[parentPos];
-
-        while(weightArr[childData] < weightArr[parentData])
+        while(child > 0)
         {
-            // swap data (parent data already saved)
+            // initialize variables
+            int childData = data[child];
+            int parentPos = (child - 1) / 2;
+            int parentData = data[parentPos];
+
+            // if parent weight is less than child weight, then stop
+            if(weightArr[parentData] <= weightArr[childData])
+            {
+                break;
+            }
+
+            // else, swap data (parent data already saved)
             data[parentPos] = childData;
             data[child] = parentData; 
 
             // set child to its parent
             child = parentPos; 
-            childData = parentData; 
-
-            // set parent to its parent
-            parentPos = (child - 1) / 2;
-            parentData = data[parentPos];
         }
 
         return;
@@ -78,57 +80,44 @@ struct MinHeap
 
     void downheap(int parent, int (&weightArr)[]) 
     {
-        // initialize variables
-        int parentData = data[parent];
-        int leftChildPos = (2 * parent) + 1;
-        int leftChildData = data[leftChildPos];
-        int rightChildPos = leftChildPos + 1;
-        int rightChildData = data[rightChildPos];
-
         // stop once parent becomes a leaf node to prevent infinite loop
-        while(leftChildPos <= size && rightChildPos <= size)
+        while(true)
         {
-            // left child case
-            if(weightArr[parentData] > weightArr[leftChildData])
-            {
-                // swap data
-                data[leftChildPos] = parentData;
-                data[parent] = leftChildData;
+            // initialize variables
+            int parentData = data[parent];
+            int leftChildPos = (2 * parent) + 1;
+            int leftChildData = data[leftChildPos];
+            int rightChildPos = leftChildPos + 1;
+            int rightChildData = data[rightChildPos];
 
-                // set parent to left child
-                parent = leftChildPos;
-                parentData = data[parent];
-
-                // set new left and right children
-                leftChildPos = (2 * parent) + 1;
-                leftChildData = data[leftChildPos];
-                rightChildPos = leftChildPos + 1;
-                rightChildData = data[rightChildPos];
-            }
-
-            // right child case 
-            else if(weightArr[parentData] > weightArr[rightChildData])
-            {
-                // swap data
-                data[rightChildPos] = parentData;
-                data[parent] = rightChildData;
-
-                // set parent to right child
-                parent = rightChildPos;
-                parentData = data[parent];
-
-                // set new left and right children
-                leftChildPos = (2 * parent) + 1;
-                leftChildData = data[leftChildPos];
-                rightChildPos = leftChildPos + 1;
-                rightChildData = data[rightChildPos];
-            }
-
-            // if no swapping occurs, loop is no longer necessary
-            else
+            // if left child exists outside of heap, then stop
+            if(leftChildPos >= size)
             {
                 break;
             }
+
+            int swapChildPos = leftChildPos;
+            int swapChildData = leftChildData;
+
+            // check if right child is smaller (as long as right child is within heap)
+            if(rightChildPos < size && weightArr[rightChildData] < weightArr[leftChildData])
+            {
+                swapChildPos = rightChildPos;
+                swapChildData = rightChildData;
+            }
+
+            // if smaller child weight is greater than parent weight, then stop
+            if(weightArr[parentData] <= weightArr[swapChildData])
+            {
+                break;
+            }
+
+            // else, swap data
+            data[swapChildPos] = parentData;
+            data[parent] = swapChildData;
+
+            // set parent to smaller child
+            parent = swapChildPos;
         }
 
         return;

@@ -87,82 +87,17 @@ int createLeafNodes(int freq[]) {
     return nextFree;
 }
 
-// only for verification/debugging purposes. DELETE LATER. NOT IN FINAL PRODUCT
-void printHeap(MinHeap min, int (&weightArr)[])
-{
-    int n = min.size;
-    int level = 0;
-    int count = 0;
-    int nextLevel = 1;
-    
-    for (int i = 0; i < n; ++i) 
-    {
-        cout << min.data[i] << "(" << weightArr[min.data[i]] << ")" << " ";
-        count++;
-        if (count == nextLevel) 
-        {
-            cout << endl;
-            level++;
-            count = 0;
-            nextLevel = 1 << level;
-        }
-    }
-
-    cout << "\n" << endl;
-    return;
-}
-
-// only for verification/debugging purposes. DELETE LATER. NOT IN FINAL PRODUCT
-void printArrays(int nextFree, char (&charArr)[], int (&weightArr)[], int (&leftArr)[], int (&rightArr)[])
-{
-    cout << "charArr: ";
-
-    for(int i = 0; i < nextFree; i++)
-    {
-        cout << charArr[i] << " ";
-    }
-
-    cout << "\nweightArr: ";
-
-    for(int i = 0; i < nextFree; i++)
-    {
-        cout << weightArr[i] << " ";
-    }
-
-    cout << "\nleftArr: ";
-
-    for(int i = 0; i < nextFree; i++)
-    {
-        cout << leftArr[i] << " ";
-    }
-
-    cout << "\nrightArr: ";
-
-    for(int i = 0; i < nextFree; i++)
-    {
-        cout << rightArr[i] << " ";
-    }
-
-    cout << "\n" << endl;
-    return;
-}
-
 // Step 3: Build the encoding tree using heap operations
 int buildEncodingTree(int nextFree) 
 {
     // Create heap
     MinHeap min = MinHeap();
 
-    cout << "\n";
-
     // Form initial heap
     for(int i = 0; i < nextFree; i++)
     {
         min.push(i, weightArr);
     }
-
-    printHeap(min, weightArr);
-    printArrays(nextFree, charArr, weightArr, leftArr, rightArr);
 
     while(min.size > 1)
     {
@@ -179,12 +114,7 @@ int buildEncodingTree(int nextFree)
         // push new parent node index into heap
         min.push(nextFree, weightArr);
         nextFree++;
-    } 
-
-    printHeap(min, weightArr);
-    printArrays(nextFree, charArr, weightArr, leftArr, rightArr);
-
-    cout << nextFree - 1 << endl;
+    }
 
     // return index of new root node
     return nextFree - 1;
@@ -201,7 +131,6 @@ void generateCodes(int root, string codes[])
     {
         // save top node, then pop it from stack
         pair<int, string> pr = stk.top();
-        cout << "int: " << pr.first << " string: " << pr.second << endl;
         stk.pop();
 
         // get left and right children of top node
@@ -220,14 +149,12 @@ void generateCodes(int root, string codes[])
             // push right child first so left node is accessed first (LIFO)
             if(rightNode != -1)
             {
-                cout << "right" << endl;
                 // add '1' to code when moving right
                 stk.push({rightNode, pr.second + '1'});
             }
                 
             if(leftNode != -1)
             {
-                cout << "left" << endl;
                 // add '0' to code when moving left
                 stk.push({leftNode, pr.second + '0'});
             }
