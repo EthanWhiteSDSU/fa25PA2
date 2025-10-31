@@ -80,7 +80,6 @@ struct MinHeap
 
     void downheap(int parent, int (&weightArr)[]) 
     {
-        // stop once parent becomes a leaf node to prevent infinite loop
         while(true)
         {
             // initialize variables
