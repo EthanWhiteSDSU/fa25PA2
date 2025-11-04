@@ -22,6 +22,41 @@ int buildEncodingTree(int nextFree);
 void generateCodes(int root, string codes[]);
 void encodeMessage(const string& filename, string codes[]);
 
+// entire function below deals with edge case where input is all the same character
+bool checkEdge(int freq[])
+{
+    int check = 0;
+    for (int i = 0; i < 26; ++i) 
+    {
+        if (freq[i] > 0)
+            check++;
+    }
+
+    if(check == 1)
+    {
+        int j = 0;
+        for (int i = 0; i < 26; ++i) 
+        {
+            if (freq[i] > 0)
+                break;
+            j++;
+        }
+
+        cout << "\nCharacter : Code\n";
+        cout << char('a' + j) << " : " << "0\n";
+    
+        cout << "\nEncoded message: ";
+        for(int i = 0; i < freq[j]; i++)
+        {
+            cout << "0";
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 int main() {
     int freq[26] = {0};
 
@@ -30,6 +65,11 @@ int main() {
 
     // Step 2: Create leaf nodes for each character with nonzero frequency
     int nextFree = createLeafNodes(freq);
+
+    if(checkEdge(freq))
+    {
+        return 0;
+    }
 
     // Step 3: Build encoding tree using your heap
     int root = buildEncodingTree(nextFree);
